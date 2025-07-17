@@ -1,0 +1,112 @@
+{
+  "name": "CODEIT - Code Typing Practice",
+  "short_name": "CODEIT",
+  "description": "Master your coding typing skills with Python, C++, and Java",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["education", "productivity", "utilities"],  "icons": [
+    {
+      "src": "Logo/Code-it-Logo.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "Logo/Code-it-Logo.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "Logo/Code-it-Logo.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "Logo/Code-it-Logo.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "Logo/Code-it-Logo.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "Logo/Code-it-Logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "Logo/Code-it-Logo.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "Logo/Code-it-Logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "Logo/Code-it-Logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "Logo/Code-it-Logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "Logo/Logo.ico",
+      "sizes": "16x16 32x32 48x48",
+      "type": "image/x-icon"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "Logo/Code-it-Logo.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],  "features": [
+    "Cross Platform",
+    "Fast",
+    "Simple",
+    "Offline Ready",
+    "Progressive Web App",
+    "Responsive Design",
+    "Real-time Tracking",
+    "Typing Practice",
+    "Code Learning"
+  ],
+  "shortcuts": [
+    {
+      "name": "Start Typing Test",
+      "short_name": "Test",
+      "description": "Start a new typing test",
+      "url": "/",
+      "icons": [
+        {
+          "src": "Logo/Code-it-Logo.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ]
+}

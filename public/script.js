@@ -28,6 +28,26 @@ if (document.getElementById('welcome-section')) {
 async function initializeApp() {
     console.log('Initializing app...'); // Debug log
     
+    // Register Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+        try {
+            const registration = await navigator.serviceWorker.register('/sw.js');
+            console.log('Service Worker registered successfully:', registration);
+            
+            // Check for updates
+            registration.addEventListener('updatefound', () => {
+                const newWorker = registration.installing;
+                newWorker.addEventListener('statechange', () => {
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                        showToast('App updated! Please refresh the page.', 'info');
+                    }
+                });
+            });
+        } catch (error) {
+            console.error('Service Worker registration failed:', error);
+        }
+    }
+    
     // Initialize Supabase
     try {
         supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -49,6 +69,9 @@ async function initializeApp() {
     
     // Track visitor
     trackVisitor();
+    
+    // PWA Install Prompt
+    setupPWAInstallPrompt();
     
     // Hide loading screen
     setTimeout(() => {
@@ -1743,6 +1766,114 @@ function trackVisitor() {
     } catch (error) {
         console.error('Error tracking visitor:', error);
     }
+}
+
+// PWA Install Prompt Setup
+let deferredPrompt;
+
+function setupPWAInstallPrompt() {
+    // Listen for the beforeinstallprompt event
+    window.addEventListener('beforeinstallprompt', (event) => {
+        // Prevent the mini-infobar from appearing on mobile
+        event.preventDefault();
+        
+        // Stash the event so it can be triggered later
+        deferredPrompt = event;
+        
+        // Show install button after user is logged in
+        if (currentUser) {
+            showInstallPrompt();
+        }
+        
+        console.log('PWA install prompt available');
+    });
+    
+    // Listen for the appinstalled event
+    window.addEventListener('appinstalled', (event) => {
+        console.log('PWA was installed');
+        showToast('CODEIT has been installed successfully!', 'success');
+        
+        // Clear the deferredPrompt
+        deferredPrompt = null;
+        
+        // Hide install button
+        hideInstallPrompt();
+    });
+}
+
+function showInstallPrompt() {
+    // Only show if not already installed and prompt is available
+    if (!deferredPrompt || isAppInstalled()) return;
+    
+    // Check if user has dismissed the prompt before
+    if (localStorage.getItem('pwa_install_dismissed') === 'true') return;
+    
+    // Wait a bit before showing the prompt
+    setTimeout(() => {
+        const installToast = document.createElement('div');
+        installToast.className = 'install-prompt-toast';
+        installToast.innerHTML = `
+            <div class="install-prompt-content">
+                <img src="Logo/Code-it-Logo.png" alt="CODEIT" class="install-prompt-icon">
+                <div class="install-prompt-text">
+                    <h3>Install CODEIT</h3>
+                    <p>Add CODEIT to your home screen for quick access!</p>
+                </div>
+                <div class="install-prompt-buttons">
+                    <button class="install-btn" id="install-app-btn">Install</button>
+                    <button class="dismiss-btn" id="dismiss-install-btn">Not Now</button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(installToast);
+        
+        // Handle install button click
+        document.getElementById('install-app-btn').addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response to install prompt: ${outcome}`);
+                
+                if (outcome === 'accepted') {
+                    console.log('User accepted the install prompt');
+                } else {
+                    console.log('User dismissed the install prompt');
+                }
+                
+                deferredPrompt = null;
+                document.body.removeChild(installToast);
+            }
+        });
+        
+        // Handle dismiss button click
+        document.getElementById('dismiss-install-btn').addEventListener('click', () => {
+            localStorage.setItem('pwa_install_dismissed', 'true');
+            document.body.removeChild(installToast);
+        });
+        
+        // Auto-hide after 10 seconds
+        setTimeout(() => {
+            if (document.body.contains(installToast)) {
+                document.body.removeChild(installToast);
+            }
+        }, 10000);
+        
+    }, 3000); // Show after 3 seconds
+}
+
+function hideInstallPrompt() {
+    const installToast = document.querySelector('.install-prompt-toast');
+    if (installToast) {
+        document.body.removeChild(installToast);
+    }
+}
+
+function isAppInstalled() {
+    // Check if app is installed by checking display mode
+    return window.matchMedia('(display-mode: standalone)').matches ||
+           window.navigator.standalone === true;
 }
 
 if (typeof window !== 'undefined' && window.supabaseClient) {
