@@ -1,4 +1,3 @@
-history.replaceState({}, '', '/');
 // shop.js - متجر CODEIT مستقل
 
 // --- إعداد متغيرات المستخدم ---

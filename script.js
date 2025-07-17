@@ -1,5 +1,4 @@
 alert('test script.js loaded');
-history.replaceState({}, '', '/');
 // Supabase Configuration
 const SUPABASE_URL = 'https://xspzacvpizjjaosrebgz.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhzcHphY3ZwaXpqamFvc3JlYmd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI1MTA4MDQsImV4cCI6MjA2ODA4NjgwNH0.pq-YKgKTY38hiqpJaivv8m79hhr_jYRkDg9Idon-TRY';
