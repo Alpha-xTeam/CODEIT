@@ -1010,7 +1010,7 @@ function toggleLeaderboard() {
 
 // Shop functionality
 function openShop() {
-    window.location.href = 'shop.html';
+    window.location.href = '/CODEIT/shop.html';
 }
 
 function updateUserCoinsDisplay() {
