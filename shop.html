@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CODEIT - المتجر</title>
+    <link rel="icon" href="Logo/Code-it-Logo.ico" type="image/x-icon">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+<script>console.log('BODY SCRIPT: shop.html loaded');</script>
+    <!-- Navigation -->    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <img src="Logo/Code-it-Logo.png" alt="Code-it Logo" class="nav-logo">
+                <span class="nav-title">CODEIT</span>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="btn btn-secondary">الصفحة الرئيسية</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Shop Modal -->
+    <div id="shop-modal" class="modal">
+        <div class="modal-content shop-modal-content">
+            <div class="modal-header">
+                <h3>Shop</h3>
+                <button id="close-shop-modal" class="modal-close" onclick="window.location.href='index.html'">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="shop-container">
+                    <div class="shop-header">
+                        <div class="user-coins-display">
+                            <i class="fas fa-coins"></i>
+                            <span id="shop-user-coins">0</span>
+                            <span>Coins</span>
+                        </div>
+                    </div>
+                    <!-- تبويبات المتجر -->
+                    <div class="shop-tabs">
+                        <button class="shop-tab" data-tab="avatar_frame">Avatar Frames</button>
+                        <button class="shop-tab" data-tab="profile_icon">Profile Icons</button>
+                    </div>
+                    <div id="shop-items" class="shop-items">
+                        <!-- Shop items will be dynamically loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shop Item Details Modal -->
+    <div id="shop-item-modal" class="modal hidden">
+        <div class="modal-content shop-item-modal-content">
+            <button id="close-shop-item-modal" class="modal-close">×</button>
+            <div class="shop-item-modal-body">
+                <div class="item-preview" id="modal-item-preview"></div>
+                <h3 class="item-name" id="modal-item-name"></h3>
+                <p class="item-description" id="modal-item-description"></p>
+                <div class="item-price" id="modal-item-price"></div>
+                <div class="item-actions" id="modal-item-actions"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@1.35.6/dist/umd/supabase.min.js"></script>
+    <script>
+      // تهيئة supabase
+      function waitForSupabase(cb) {
+        if (window.supabase && typeof window.supabase.createClient === 'function') {
+          cb();
+        } else {
+          setTimeout(() => waitForSupabase(cb), 50);
+        }
+      }
+      waitForSupabase(function() {
+        if (!window.supabaseClient) {
+          const SUPABASE_URL = 'https://xspzacvpizjjaosrebgz.supabase.co';
+          const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhzcHphY3ZwaXpqamFvc3JlYmd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI1MTA4MDQsImV4cCI6MjA2ODA4NjgwNH0.pq-YKgKTY38hiqpJaivv8m79hhr_jYRkDg9Idon-TRY';
+          window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+          window.supabase = window.supabaseClient;
+        }
+        // بعد تهيئة supabase، حمّل shop.js
+        var s = document.createElement('script');
+        s.src = 'shop.js';
+        document.body.appendChild(s);
+      });
+    </script>
+    <script src="snippets.js"></script>
+</body>
+<script>console.log('END SCRIPT: shop.html loaded');</script>
+</html>

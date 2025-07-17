@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CODEIT</title>
+    <link rel="icon" href="Logo/Code-it-Logo.ico" type="image/x-icon">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loader">
+            <img src="Logo/Code-it-Logo.png" alt="Code-it Logo" class="logo-loader">
+            <div class="loading-text">Loading CODEIT...</div>
+        </div>
+    </div>
+
+    <!-- Navigation -->    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <img src="Logo/Code-it-Logo.png" alt="Code-it Logo" class="nav-logo">
+                <span class="nav-title">CODEIT</span>
+            </div>
+            <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Toggle navigation">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+            <div class="nav-menu">
+                <div id="user-menu" class="user-menu hidden">
+                    <div class="coins-display">
+                        <i class="fas fa-coins"></i>
+                        <span id="user-coins">0</span>
+                    </div>
+                    <button id="shop-btn" class="shop-btn">
+                        <i class="fas fa-shopping-cart"></i>
+                        Shop
+                    </button>
+                    <div class="user-avatar">
+                        <img id="nav-avatar" src="" alt="User Avatar">
+                        <div id="profile-icon" class="profile-icon"></div>
+                    </div>
+                    <span id="nav-username"></span>
+                    <button id="logout-btn" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Welcome Section -->
+        <div id="welcome-section" class="welcome-section">
+            <div class="welcome-container">
+                <div class="welcome-content">
+                    <img src="Logo/Code-it-Logo.png" alt="Code-it Logo" class="welcome-logo">
+                    <h1 class="welcome-title">Ready?</h1>
+                    <button id="start-journey-btn" class="welcome-btn">
+                        CODE IT !
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Login/Register Form -->
+        <div id="auth-section" class="auth-section hidden">`
+            <div class="auth-container">
+                <div class="auth-header">
+                    <img src="Logo/Code-it-Logo.png" alt="Code-it Logo" class="auth-logo">
+                    <h1>Welcome to CODEIT</h1>
+                    <p>Master your coding typing skills</p>
+                </div>
+
+                <!-- Login Form -->
+                <div id="login-form" class="auth-form">
+                    <h2>Login</h2>
+                    <form id="login-form-element">
+                        <div class="form-group">
+                            <label for="login-email">Email</label>
+                            <input type="email" id="login-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Password</label>
+                            <input type="password" id="login-password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+                    <p class="auth-switch">
+                        Don't have an account? 
+                        <a href="#" id="show-register">Register here</a>
+                    </p>
+                </div>
+
+                <!-- Register Form -->
+                <div id="register-form" class="auth-form hidden">
+                    <h2>Create Account</h2>
+                    <form id="register-form-element">                        <div class="form-group">
+                            <label for="register-name">Full Name (Arabic)</label>
+                            <input type="text" id="register-name" required 
+                                   title="Please enter your name in Arabic">
+                        </div>                        <div class="form-group">
+                            <label for="register-email">Email</label>
+                            <input type="email" id="register-email" required 
+                                   title="Email must end with @student.uobabylon.edu.iq">
+                        </div>
+                        <div class="form-group">
+                            <label for="register-password">Password</label>
+                            <input type="password" id="register-password" required minlength="6">
+                        </div>
+                        <div class="form-group">
+                            <label>Choose Avatar</label>
+                            <div class="avatar-selection">
+                                <div class="avatar-option" data-avatar="man.png">
+                                    <img src="avatars/man.png" alt="Man Avatar">
+                                </div>
+                                <div class="avatar-option" data-avatar="man2.png">
+                                    <img src="avatars/man2.png" alt="Man Avatar 2">
+                                </div>
+                                <div class="avatar-option" data-avatar="man3.png">
+                                    <img src="avatars/man3.png" alt="Man Avatar 3">
+                                </div>
+                                <div class="avatar-option" data-avatar="woman.png">
+                                    <img src="avatars/woman.png" alt="Woman Avatar">
+                                </div>
+                                <div class="avatar-option" data-avatar="woman2.png">
+                                    <img src="avatars/woman2.png" alt="Woman Avatar 2">
+                                </div>
+                                <div class="avatar-option" data-avatar="woman3.png">
+                                    <img src="avatars/woman3.png" alt="Woman Avatar 3">
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Account</button>
+                    </form>
+                    <p class="auth-switch">
+                        Already have an account? 
+                        <a href="#" id="show-login">Login here</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Game Section -->
+        <div id="game-section" class="game-section hidden">
+            <!-- Game Settings -->
+            <div class="game-settings">
+                <div class="settings-group">
+                    <label for="language-select">Programming Language</label>
+                    <select id="language-select" class="select-input">
+                        <option value="python">Python</option>
+                        <option value="cpp">C++</option>
+                        <option value="java">Java</option>
+                    </select>
+                </div>
+                <div class="settings-group">
+                    <label for="difficulty-select">Difficulty Level</label>
+                    <select id="difficulty-select" class="select-input">                        <option value="easy">Easy (10 coins)</option>
+                        <option value="medium">Medium (20 coins)</option>
+                        <option value="hard">Hard (30 coins)</option>
+                    </select>
+                </div>
+                <button id="start-game" class="btn btn-primary">Start Typing Test</button>
+            </div>            <!-- Game Area -->
+            <div id="game-area" class="game-area hidden">
+                <div class="game-header">
+                    <div class="game-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-clock"></i>
+                            <span id="timer">0:00.00</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-bullseye"></i>
+                            <span id="accuracy" class="accuracy-display">100%</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span id="wpm">0 WPM</span>
+                        </div>                        <div class="stat-item">
+                            <i class="fas fa-coins"></i>
+                            <span id="current-coins">0</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Progress Bar -->
+                    <div class="progress-container">
+                        <div id="progress-bar" class="progress-bar">
+                            <div id="progress-fill" class="progress-fill"></div>
+                        </div>
+                        <div id="progress-text" class="progress-text">0/0 characters</div>
+                    </div>
+                </div>
+
+                <div class="code-display">
+                    <div class="code-header">
+                        <span id="code-language">Python</span>
+                        <span id="code-difficulty">Easy</span>
+                    </div>
+                    <pre id="code-snippet" class="code-snippet"></pre>
+                </div>
+
+                <div class="typing-area">
+                    <textarea id="typing-input" 
+                              class="typing-input" 
+                              placeholder="Start typing the code snippet here..."
+                              disabled
+                              spellcheck="false"></textarea>
+                </div>
+
+                <div class="game-controls">
+                    <button id="retry-btn" class="btn btn-secondary">
+                        <i class="fas fa-redo"></i> Retry
+                    </button>
+                    <button id="new-snippet-btn" class="btn btn-info">
+                        <i class="fas fa-refresh"></i> New Snippet
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results Modal -->
+            <div id="results-modal" class="modal hidden">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Test Results</h2>
+                        <button id="close-modal" class="close-btn">&times;</button>
+                    </div>
+                    <div class="modal-body">                        <div class="result-stats">
+                            <div class="result-item">
+                                <i class="fas fa-clock"></i>
+                                <div>
+                                    <span class="result-label">Time</span>
+                                    <span id="result-time" class="result-value">0:00.00</span>
+                                </div>
+                            </div>
+                            <div class="result-item">
+                                <i class="fas fa-bullseye"></i>
+                                <div>
+                                    <span class="result-label">Accuracy</span>
+                                    <span id="result-accuracy" class="result-value">100%</span>
+                                </div>
+                            </div>
+                            <div class="result-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <div>
+                                    <span class="result-label">Speed</span>
+                                    <span id="result-wpm" class="result-value">0 WPM</span>
+                                </div>
+                            </div>                            <div class="result-item">
+                                <i class="fas fa-coins"></i>
+                                <div>
+                                    <span class="result-label">Coins Earned</span>
+                                    <span id="result-coins" class="result-value">0</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="result-rating">
+                            <div id="rating-badge" class="rating-badge">
+                                <span id="rating-text">Excellent</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="continue-btn" class="btn btn-primary">Continue</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leaderboard Section -->
+        <div id="leaderboard-section" class="leaderboard-section">
+            <div class="leaderboard-header">
+                <h2>
+                    <i class="fas fa-trophy"></i>
+                    Global Leaderboard
+                </h2>
+                <button id="toggle-leaderboard" class="btn btn-secondary">
+                    <i class="fas fa-eye"></i>
+                    Show Leaderboard
+                </button>
+            </div>
+            <div id="leaderboard-content" class="leaderboard-content hidden">
+                <div class="leaderboard-table">
+                    <div class="table-header">
+                        <div class="rank-col">Rank</div>
+                        <div class="user-col">User</div>
+                        <div class="points-col">Points</div>
+                    </div>
+                    <div id="leaderboard-list" class="table-body">
+                        <!-- Leaderboard entries will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Shop Modal -->
+    <!-- تم نقل المتجر إلى صفحة منفصلة -->
+    <!-- Shop Item Details Modal -->
+    <!-- تم نقل تفاصيل عناصر المتجر إلى صفحة منفصلة -->
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="snippets.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
