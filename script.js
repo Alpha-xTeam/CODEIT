@@ -375,7 +375,7 @@ async function showGameSection() {
     document.body.classList.remove('hide-navbar');
     
     // Update user menu
-    document.getElementById('nav-avatar').src = `avatars/${currentUser.avatar}`;
+    document.getElementById('nav-avatar').src = `CODEIT/avatars/${currentUser.avatar}`;
     document.getElementById('nav-username').textContent = currentUser.name;
     updateUserCoinsDisplay();
     
@@ -982,7 +982,7 @@ async function loadLeaderboard() {
             entry.innerHTML = `
                 <div class="rank ${rankClass}">${user.rank}</div>
                 <div class="user-info">
-                    <img src="avatars/${user.avatar}" alt="${user.name}">
+                    <img src="CODEIT/avatars/${user.avatar}" alt="${user.name}">
                     <span class="name">${user.name}</span>
                 </div>
                 <div class="coins">${user.total_coins}</div>
@@ -1166,7 +1166,7 @@ function getItemPreviewStyle(category, itemData) {
 function getItemPreviewContent(category, itemData) {
     switch (category) {
         case 'avatar_frame':
-            return '<div class="avatar-preview"><img src="avatars/man.png" alt="Avatar"></div>';
+            return '<div class="avatar-preview"><img src="CODEIT/avatars/man.png" alt="Avatar"></div>';
         case 'profile_icon':
             return `<div class="icon-preview" style="color: ${itemData.color || '#333'}">${itemData.icon}</div>`;
         default:
