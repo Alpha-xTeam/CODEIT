@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم CODEIT</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #ffffff;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Admin Container */
+        .admin-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            background: rgba(30, 30, 30, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            padding: 3rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Header Section */
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .admin-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: #ffffff;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .admin-title i {
+            color: #ffffff;
+            font-size: 2.5rem;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+        }
+
+        /* Section Styles */
+        .admin-section {
+            margin-bottom: 3rem;
+            background: rgba(40, 40, 40, 0.3);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .admin-section:hover {
+            background: rgba(40, 40, 40, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .admin-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: #ffffff;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .admin-section h2 i {
+            color: #ffffff;
+            font-size: 1.4rem;
+            opacity: 0.8;
+        }        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+            border-radius: 16px;
+            padding: 1.8rem;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #ffffff, #cccccc);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }        .stat-label {
+            font-size: 0.8rem;
+            color: #cccccc;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            line-height: 1.2;
+            margin-top: 0.5rem;
+        }
+
+        /* Table Styles */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .table th,
+        .table td {
+            padding: 1rem 1.5rem;
+            text-align: right;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .table th {
+            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+            color: #ffffff;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+        }
+
+        .table tr {
+            transition: all 0.3s ease;
+        }
+
+        .table tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: scale(1.01);
+        }
+
+        .table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table i {
+            color: #ffffff;
+            font-size: 1rem;
+            margin-left: 0.5rem;
+            opacity: 0.8;
+        }
+
+        /* Button Styles */
+        .btn {
+            background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+            color: #1a1a1a;
+            border: none;
+            border-radius: 8px;
+            padding: 0.7rem 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.85rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, #f0f0f0 0%, #d0d0d0 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .danger {
+            background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
+            color: #ffffff;
+        }
+
+        .danger:hover {
+            background: linear-gradient(135deg, #ff6666 0%, #dd0000 100%);
+        }
+
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
+        }        /* Responsive Design */
+        @media (max-width: 768px) {
+            .admin-container {
+                margin: 1rem;
+                padding: 2rem;
+            }
+
+            .admin-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .admin-title {
+                font-size: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 1rem;
+            }
+
+            .stat-card {
+                padding: 1.5rem;
+                min-height: 120px;
+            }
+
+            .stat-icon {
+                font-size: 2rem;
+            }
+
+            .stat-value {
+                font-size: 1.8rem;
+            }
+
+            .stat-label {
+                font-size: 0.75rem;
+            }
+
+            .table th,
+            .table td {
+                padding: 0.8rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .stat-card {
+                padding: 1rem;
+                min-height: 100px;
+            }
+        }
+
+        /* Loading Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .admin-section {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #666;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #999;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="admin.js"></script>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <span class="admin-title"><i class="fas fa-crown"></i> لوحة تحكم CODEIT</span>
+            <button class="btn" onclick="window.location.href='index.html'">العودة للموقع</button>
+        </div>
+        <div id="admin-content" class="hidden">
+            <div class="admin-section">
+                <h2><i class="fas fa-chart-bar"></i> إحصائيات عامة</h2>
+                <div class="stats-grid" id="stats-grid"></div>
+            </div>
+            <div class="admin-section">
+                <h2><i class="fas fa-users"></i> إدارة المستخدمين</h2>
+                <table class="table" id="users-table">
+                    <thead>
+                        <tr><th><i class="fas fa-user"></i> الاسم</th><th><i class="fas fa-envelope"></i> البريد</th><th><i class="fas fa-user-shield"></i> الدور</th><th><i class="fas fa-cogs"></i> العمليات</th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="admin-section">
+                <h2><i class="fas fa-store"></i> إدارة المتجر</h2>
+                <table class="table" id="shop-table">
+                    <thead>
+                        <tr><th><i class="fas fa-box"></i> العنصر</th><th><i class="fas fa-tags"></i> الفئة</th><th><i class="fas fa-coins"></i> السعر</th><th><i class="fas fa-cogs"></i> العمليات</th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>        <div id="not-allowed" class="admin-section">
+            <div style="text-align: center; padding: 2rem;">
+                <i class="fas fa-ban" style="font-size: 4rem; color: #ff4444; margin-bottom: 1rem; opacity: 0.8;"></i>
+                <h2 style="color: #ff4444; font-size: 1.8rem; margin-bottom: 1rem;">غير مصرح لك بالدخول إلى لوحة التحكم</h2>
+                <p style="color: #cccccc; font-size: 1.1rem;">يرجى التواصل مع المسؤول للحصول على صلاحيات الوصول</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

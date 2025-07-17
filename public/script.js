@@ -1,4 +1,3 @@
-alert('test script.js loaded');
 // Supabase Configuration
 const SUPABASE_URL = 'https://xspzacvpizjjaosrebgz.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhzcHphY3ZwaXpqamFvc3JlYmd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI1MTA4MDQsImV4cCI6MjA2ODA4NjgwNH0.pq-YKgKTY38hiqpJaivv8m79hhr_jYRkDg9Idon-TRY';
@@ -47,6 +46,9 @@ async function initializeApp() {
         console.error('Failed to initialize Supabase:', error);
         showToast('Failed to connect to database', 'error');
     }
+    
+    // Track visitor
+    trackVisitor();
     
     // Hide loading screen
     setTimeout(() => {
@@ -374,7 +376,7 @@ async function showGameSection() {
     document.body.classList.remove('hide-navbar');
     
     // Update user menu
-    document.getElementById('nav-avatar').src = `/avatars/${currentUser.avatar}`;
+    document.getElementById('nav-avatar').src = `avatars/${currentUser.avatar}`;
     document.getElementById('nav-username').textContent = currentUser.name;
     updateUserCoinsDisplay();
     
@@ -383,6 +385,16 @@ async function showGameSection() {
     await applyUserTheme();
     
     loadLeaderboard();
+    
+    // إظهار زر لوحة التحكم إذا كان المستخدم مالك
+    const adminBtn = document.getElementById('admin-btn');
+    if (adminBtn) {
+        if (currentUser.role === 'owner') {
+            adminBtn.classList.remove('hidden');
+        } else {
+            adminBtn.classList.add('hidden');
+        }
+    }
     
     console.log('Game section shown successfully, user coins display updated');
 }
@@ -951,9 +963,8 @@ function newSnippet() {
 async function loadLeaderboard() {
     try {
         const { data: leaderboard, error } = await supabase
-            .from('leaderboard')
-            .select('*')
-            .limit(50);
+            .from('leaderboard_with_frame')
+            .select('*');
         
         if (error) {
             console.error('Error loading leaderboard:', error);
@@ -977,11 +988,23 @@ async function loadLeaderboard() {
             }
             
             const rankClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
-            
+
+            // تجهيز بيانات الإطار المفعّل لهذا المستخدم (إذا كانت متوفرة)
+            let frameClass = '';
+            let frameStyle = '';
+            if (user.frame_data) {
+                if (user.frame_data.css_class) frameClass = user.frame_data.css_class;
+                if (user.frame_data.border) frameStyle += `border: ${user.frame_data.border};`;
+                if (user.frame_data.shadow) frameStyle += `box-shadow: ${user.frame_data.shadow};`;
+                if (user.frame_data.background) frameStyle += `background: ${user.frame_data.background};`;
+            }
+
             entry.innerHTML = `
-                <div class="rank ${rankClass}">${user.rank}</div>
+                <div class="rank ${rankClass}">${index + 1}</div>
                 <div class="user-info">
-                    <img src="/avatars/${user.avatar}" alt="${user.name}">
+                    <div class="avatar-preview ${frameClass}" style="${frameStyle}">
+                        <img src="avatars/${user.avatar}" alt="${user.name}">
+                    </div>
                     <span class="name">${user.name}</span>
                 </div>
                 <div class="coins">${user.total_coins}</div>
@@ -1165,7 +1188,7 @@ function getItemPreviewStyle(category, itemData) {
 function getItemPreviewContent(category, itemData) {
     switch (category) {
         case 'avatar_frame':
-            return '<div class="avatar-preview"><img src="/avatars/man.png" alt="Avatar"></div>';
+            return '<div class="avatar-preview"><img src="avatars/man.png" alt="Avatar"></div>';
         case 'profile_icon':
             return `<div class="icon-preview" style="color: ${itemData.color || '#333'}">${itemData.icon}</div>`;
         default:
@@ -1512,6 +1535,15 @@ async function checkUserSession() {
                 document.getElementById('welcome-section').classList.add('hidden');
                 document.body.classList.remove('hide-navbar');
                 await showGameSection();
+                // إظهار زر لوحة التحكم إذا كان المستخدم مالك
+                const adminBtn = document.getElementById('admin-btn');
+                if (adminBtn) {
+                    if (currentUser.role === 'owner') {
+                        adminBtn.classList.remove('hidden');
+                    } else {
+                        adminBtn.classList.add('hidden');
+                    }
+                }
                 return;
             } else {
                 // إذا لم تعد بيانات المستخدم صالحة، امسح localStorage
@@ -1537,6 +1569,15 @@ async function checkUserSession() {
                 document.getElementById('welcome-section').classList.add('hidden');
                 document.body.classList.remove('hide-navbar');
                 await showGameSection();
+                // إظهار زر لوحة التحكم إذا كان المستخدم مالك
+                const adminBtn = document.getElementById('admin-btn');
+                if (adminBtn) {
+                    if (currentUser.role === 'owner') {
+                        adminBtn.classList.remove('hidden');
+                    } else {
+                        adminBtn.classList.add('hidden');
+                    }
+                }
             }
         } else {
             console.log('No user session found, showing welcome page');
@@ -1680,6 +1721,29 @@ window.testTheme = function(themeClass) {
     console.log('Applied theme:', themeClass);
     console.log('Body classes:', document.body.classList.toString());
 };
+
+// Track visitor function
+function trackVisitor() {
+    try {
+        const today = new Date().toDateString();
+        const lastVisit = localStorage.getItem('last_visit_date');
+        
+        // If this is a new day visit or first visit
+        if (lastVisit !== today) {
+            let totalVisitors = parseInt(localStorage.getItem('total_visitors') || '0');
+            totalVisitors++;
+            
+            localStorage.setItem('total_visitors', totalVisitors.toString());
+            localStorage.setItem('last_visit_date', today);
+            
+            console.log('New visitor tracked. Total visitors:', totalVisitors);
+        } else {
+            console.log('Visitor already tracked today');
+        }
+    } catch (error) {
+        console.error('Error tracking visitor:', error);
+    }
+}
 
 if (typeof window !== 'undefined' && window.supabaseClient) {
   window.supabase = window.supabaseClient;
