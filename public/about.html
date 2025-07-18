@@ -189,6 +189,10 @@
         <img src="Logo/Code-it-Logo.png" alt="Code-it Logo" class="nav-logo">
         <span class="nav-title">CODEIT</span>
       </div>
+      <!-- زر العودة -->
+      <a href="index.html" class="back-arrow-navbar" title="Back to Home">
+        <i class="fas fa-arrow-left"></i> <span>Back</span>
+      </a>
     </div>
   </nav>
   <div class="about-container">
@@ -258,6 +262,40 @@
       padding: 0;
       display: inline-block;
       animation: fadeInUp 1s;
+    }
+    .back-arrow-navbar {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(255,255,255,0.08);
+      color: #fff !important;
+      border-radius: 18px;
+      padding: 7px 18px 7px 14px;
+      font-size: 1.15rem;
+      font-weight: 600;
+      text-decoration: none;
+      box-shadow: 0 2px 12px #fff1;
+      border: 1.5px solid #fff2;
+      transition: background 0.18s, color 0.18s, box-shadow 0.18s, border 0.18s;
+      margin-right: 0;
+      margin-left: 12px;
+    }
+    .back-arrow-navbar:hover {
+      background: #fff;
+      color: #222 !important;
+      border: 1.5px solid #fff;
+      box-shadow: 0 4px 18px #fff3;
+    }
+    .back-arrow-navbar i {
+      font-size: 1.2em;
+      margin-right: 4px;
+      transition: color 0.18s;
+    }
+    @media (max-width: 600px) {
+      .back-arrow-navbar {
+        font-size: 1rem;
+        padding: 5px 10px 5px 8px;
+      }
     }
   </style>
   <script>
