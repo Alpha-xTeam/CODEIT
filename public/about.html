@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About Us | Alpha Team</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      background: #000 !important;
+      color: #fff;
+    }
+    .about-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 32px 16px 64px 16px;
+    }
+    .about-hero {
+      text-align: center;
+      margin-top: 48px;
+      margin-bottom: 48px;
+    }
+    .about-hero h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 18px;
+    }
+    .about-hero p {
+      font-size: 1.25rem;
+      color: #b3b3b3;
+      margin-bottom: 24px;
+    }
+    .about-cta {
+      margin-top: 18px;
+    }
+    .about-cta .btn {
+      background: #fff;
+      color: #222;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 32px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      box-shadow: 0 2px 12px #7b2ff233;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .about-cta .btn:hover {
+      background: #eaeaea;
+      color: #111;
+    }
+    .about-cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 32px;
+      justify-content: center;
+      margin-bottom: 48px;
+    }
+    .about-card {
+      background: #181828;
+      border-radius: 18px;
+      box-shadow: 0 4px 24px #7b2ff211, 0 1.5px 6px #36d1c422;
+      padding: 32px 28px 28px 28px;
+      min-width: 260px;
+      max-width: 340px;
+      flex: 1 1 260px;
+      text-align: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .about-card i {
+      font-size: 2.5rem;
+      color: #36d1c4;
+      margin-bottom: 16px;
+      transition: color 0.2s;
+    }
+    .about-card h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+    .about-card p {
+      color: #b3b3b3;
+      font-size: 1rem;
+    }
+    .about-card:hover {
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: 0 8px 32px #36d1c433, 0 2px 12px #7b2ff244;
+    }
+    .about-card:hover i {
+      color: #7b2ff2;
+    }
+    .about-identity {
+      background: #181828;
+      border-radius: 18px;
+      box-shadow: 0 4px 24px #7b2ff211, 0 1.5px 6px #36d1c422;
+      padding: 32px 28px;
+      margin-bottom: 48px;
+      color: #fff;
+      font-size: 1.1rem;
+      line-height: 1.7;
+    }
+    .about-socials {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin: 32px 0 0 0;
+    }
+    .about-socials a {
+      color: #fff;
+      font-size: 2.4rem;
+      background: transparent;
+      border-radius: 50%;
+      width: 62px;
+      height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2.5px solid #36d1c4;
+      box-shadow: 0 0 16px 2px #36d1c488, 0 0 0 4px #7b2ff233;
+      transition: box-shadow 0.25s, transform 0.18s, border-color 0.2s, background 0.2s;
+    }
+    .about-socials a:hover {
+      background: rgba(54,209,196,0.10);
+      color: #fff;
+      box-shadow: 0 0 32px 6px #7b2ff299, 0 0 0 6px #36d1c4aa;
+      border-color: #7b2ff2;
+      transform: scale(1.13) rotate(-3deg);
+    }
+    .about-socials a i {
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 1em;
+      height: 1em;
+      box-sizing: content-box;
+      border: none;
+      background: none;
+    }
+    .about-socials a,
+    .about-socials a:visited,
+    .about-socials a i {
+      text-decoration: none !important;
+      box-shadow: none !important;
+      border-bottom: none !important;
+      outline: none !important;
+    }
+    @media (max-width: 900px) {
+      .about-cards {
+        flex-direction: column;
+        align-items: center;
+      }
+      .about-card {
+        max-width: 100%;
+      }
+    }
+    @media (max-width: 600px) {
+      .about-container {
+        padding: 16px 4px 32px 4px;
+      }
+      .about-hero h1 {
+        font-size: 2rem;
+      }
+      .about-card {
+        padding: 22px 10px 18px 10px;
+      }
+      .about-identity {
+        padding: 18px 8px;
+        font-size: 1rem;
+      }
+      .about-socials a {
+        width: 44px;
+        height: 44px;
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <img src="Logo/Code-it-Logo.png" alt="Code-it Logo" class="nav-logo">
+        <span class="nav-title">CODEIT</span>
+      </div>
+    </div>
+  </nav>
+  <div class="about-container">
+    <!-- Hero Section -->
+    <section class="about-hero">
+      <img src="Logo/Alpha-Logo.png" alt="Alpha Team Logo" class="alpha-logo">
+      <h1>Meet Alpha Team</h1>
+      <p>Alpha Team is a student-led tech group from the College of Information Technology. Our mission is to spread tech awareness among students and introduce them to the latest technologies. We aim to expand across Iraq, bridging the technological gap in the country.</p>
+      <div class="about-cta">
+        <a href="#contact" class="btn">Follow Us</a>
+      </div>
+    </section>
+    <!-- Mission & Vision Cards -->
+    <div class="about-cards">
+      <div class="about-card" style="animation: fadeInUp 0.7s 0.1s both;">
+        <i class="fas fa-bullseye"></i>
+        <h3>Our Mission</h3>
+        <p>To empower students with the latest tech knowledge and skills, making technology accessible and exciting for everyone.</p>
+      </div>
+      <div class="about-card" style="animation: fadeInUp 0.7s 0.2s both;">
+        <i class="fas fa-lightbulb"></i>
+        <h3>Our Vision</h3>
+        <p>To become Iraq’s leading student tech community, inspiring innovation and bridging the digital divide nationwide.</p>
+      </div>
+      <div class="about-card" style="animation: fadeInUp 0.7s 0.3s both;">
+        <i class="fas fa-users"></i>
+        <h3>Core Values</h3>
+        <p>Collaboration, curiosity, and a passion for learning drive us to create a supportive and innovative tech environment.</p>
+      </div>
+    </div>
+    <!-- Team Identity Section -->
+    <section class="about-identity">
+      <strong>Who are we?</strong><br>
+      Alpha Team started as a group of passionate students at the College of Information Technology, united by a shared goal: to make technology accessible and exciting for all. What makes us unique is our commitment to community, our drive to innovate, and our vision to expand tech awareness beyond university walls and across Iraq.
+    </section>
+    <!-- Join Us / Contact Section -->
+    <section id="contact" class="about-cta" style="text-align:center;">
+      <a href="https://t.me/xteam_alpha" class="btn" target="_blank" rel="noopener">Join Us on Telegram</a>
+    </section>
+    <!-- Social Media Links -->
+    <div class="about-socials">
+      <a href="https://www.instagram.com/talpha.dev" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+      <a href="https://t.me/xteam_alpha" target="_blank" rel="noopener" aria-label="Telegram"><i class="fab fa-telegram"></i></a>
+    </div>
+  </div>
+  <!-- Simple scroll animation -->
+  <style>
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(40px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .about-card {
+      opacity: 0;
+      animation: fadeInUp 0.7s forwards;
+    }
+    .about-card:nth-child(1) { animation-delay: 0.1s; }
+    .about-card:nth-child(2) { animation-delay: 0.2s; }
+    .about-card:nth-child(3) { animation-delay: 0.3s; }
+    .alpha-logo {
+      width: 110px;
+      height: 110px;
+      object-fit: contain;
+      margin-bottom: 18px;
+      filter: drop-shadow(0 2px 16px #36d1c455);
+      border-radius: 18px;
+      background: none;
+      padding: 0;
+      display: inline-block;
+      animation: fadeInUp 1s;
+    }
+  </style>
+  <script>
+    // Simple scroll animation for cards
+    document.addEventListener('DOMContentLoaded', function() {
+      const cards = document.querySelectorAll('.about-card');
+      function animateCards() {
+        cards.forEach(card => {
+          const rect = card.getBoundingClientRect();
+          if (rect.top < window.innerHeight - 60) {
+            card.style.opacity = 1;
+          }
+        });
+      }
+      window.addEventListener('scroll', animateCards);
+      animateCards();
+    });
+  </script>
+</body>
+</html> 

@@ -13,7 +13,8 @@ let gameState = {
     difficulty: 'easy',
     timer: null,
     totalCharacters: 0,
-    correctCharacters: 0
+    correctCharacters: 0,
+    snippetIndices: {} // أضف في gameState:
 };
 
 // (تم حذف كائن codeSnippets من هنا، استخدمه من ملف snippets.js)
@@ -181,6 +182,46 @@ function setupEventListeners() {
     // Shop toggle
     document.getElementById('shop-btn').addEventListener('click', openShop);
     
+    // منبثق الحساب
+    function setupAccountDropdownEvents() {
+        const avatarTrigger = document.getElementById('user-avatar-dropdown-trigger');
+        const accountDropdown = document.getElementById('account-dropdown');
+        if (avatarTrigger && accountDropdown) {
+            avatarTrigger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                // عند الضغط على الأفاتار، أظهر أو أخفِ المنبثق
+                accountDropdown.classList.toggle('hidden');
+                // عند الفتح، حدث بيانات المنبثق
+                if (!accountDropdown.classList.contains('hidden')) {
+                    if (currentUser) {
+                        const avatar = document.getElementById('dropdown-avatar');
+                        const username = document.getElementById('dropdown-username');
+                        const email = document.getElementById('dropdown-email');
+                        if (avatar) avatar.src = `avatars/${currentUser.avatar}`;
+                        if (username) username.textContent = currentUser.name;
+                        if (email) email.textContent = currentUser.email;
+                    }
+                }
+            });
+            // إخفاء المنبثق عند الضغط خارج القائمة
+            document.addEventListener('click', function(e) {
+                if (!avatarTrigger.contains(e.target) && !accountDropdown.contains(e.target)) {
+                    accountDropdown.classList.add('hidden');
+                }
+            });
+        }
+        // زر تسجيل الخروج في المنبثق
+        const dropdownLogoutBtn = document.getElementById('dropdown-logout-btn');
+        if (dropdownLogoutBtn) {
+            dropdownLogoutBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (accountDropdown) accountDropdown.classList.add('hidden');
+                handleLogout();
+            });
+        }
+    }
+    setupAccountDropdownEvents();
+    
     console.log('Event listeners setup completed'); // Debug log
 }
 
@@ -262,15 +303,23 @@ async function handleLogin(e) {
 
 async function handleRegister(e) {
     e.preventDefault();
-    
     console.log('Registration form submitted'); // Debug log
-    
-    const name = document.getElementById('register-name').value;
+    const name = document.getElementById('register-name').value.trim();
     const email = document.getElementById('register-email').value;
     const password = document.getElementById('register-password').value;
     const selectedAvatar = document.querySelector('.avatar-option.selected');
-    
     console.log('Form data:', { name, email, password: '***', avatar: selectedAvatar?.dataset?.avatar }); // Debug log
+    // تحقق من أن الاسم عربي فقط و3 كلمات على الأقل
+    const arabicRegex = /^[\u0600-\u06FF\s]+$/;
+    if (!arabicRegex.test(name)) {
+        showToast('الاسم يجب أن يكون باللغة العربية فقط', 'error');
+        return;
+    }
+    const words = name.split(/\s+/).filter(Boolean);
+    if (words.length < 3) {
+        showToast('الاسم يجب أن يتكون من 3 كلمات على الأقل', 'error');
+        return;
+    }
     
     // Validate inputs
     if (!name || !email || !password) {
@@ -400,7 +449,13 @@ async function showGameSection() {
     
     // Update user menu
     document.getElementById('nav-avatar').src = `avatars/${currentUser.avatar}`;
-    document.getElementById('nav-username').textContent = currentUser.name;
+    // تحديث بيانات المنبثق مباشرة عند تسجيل الدخول
+    const avatar = document.getElementById('dropdown-avatar');
+    const username = document.getElementById('dropdown-username');
+    const email = document.getElementById('dropdown-email');
+    if (avatar) avatar.src = `avatars/${currentUser.avatar}`;
+    if (username) username.textContent = currentUser.name;
+    if (email) email.textContent = currentUser.email;
     updateUserCoinsDisplay();
     
     // Apply user theme and items
@@ -492,9 +547,8 @@ function startGame() {
     gameState.language = language;
     gameState.difficulty = difficulty;
     
-    // Get random snippet
-    const snippets = codeSnippets[language][difficulty];
-    gameState.currentSnippet = snippets[Math.floor(Math.random() * snippets.length)];
+    // استخدم المؤشر بدلاً من العشوائية
+    gameState.currentSnippet = getNextSnippet(language, difficulty);
     
     // Show game area
     document.getElementById('game-area').classList.remove('hidden');
@@ -947,15 +1001,19 @@ function newSnippet() {
     const language = document.getElementById('language-select').value;
     const difficulty = document.getElementById('difficulty-select').value;
     
-    // Get different snippet
-    const snippets = codeSnippets[language][difficulty];
-    let newSnippet;
-    do {
-        newSnippet = snippets[Math.floor(Math.random() * snippets.length)];
-    } while (newSnippet === gameState.currentSnippet && snippets.length > 1);
-    
-    gameState.currentSnippet = newSnippet;
-    document.getElementById('code-snippet').textContent = newSnippet;
+    // استخدم المؤشر بدلاً من العشوائية
+    let newSnippet = getNextSnippet(language, difficulty);
+    // إذا كان هناك سؤال واحد فقط، لا تكرر نفس السؤال
+    if (codeSnippets[language][difficulty].length === 1) {
+        gameState.currentSnippet = newSnippet;
+    } else {
+        // إذا تكرر نفس السؤال مرتين متتاليتين، خذ التالي
+        if (newSnippet === gameState.currentSnippet) {
+            newSnippet = getNextSnippet(language, difficulty);
+        }
+        gameState.currentSnippet = newSnippet;
+    }
+    document.getElementById('code-snippet').textContent = gameState.currentSnippet;
     
     // Reset game state
     gameState.isPlaying = false;
@@ -1001,38 +1059,51 @@ async function loadLeaderboard() {
             leaderboardList.innerHTML = '<div class="no-data">No users on leaderboard yet</div>';
             return;
         }
-        
+        // ترتيب النتائج حسب النقاط من الأعلى للأقل
+        leaderboard.sort((a, b) => b.total_coins - a.total_coins);
         leaderboard.forEach((user, index) => {
             const entry = document.createElement('div');
             entry.className = 'leaderboard-entry';
-            
+            // تمييز المستخدم الحالي
             if (currentUser && user.id === currentUser.id) {
                 entry.classList.add('current-user');
             }
-            
-            const rankClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
-
-            // تجهيز بيانات الإطار المفعّل لهذا المستخدم (إذا كانت متوفرة)
+            // تطبيق إطار الأفاتار (frame) على الكارت نفسه إذا كان موجوداً
             let frameClass = '';
             let frameStyle = '';
             if (user.frame_data) {
-                if (user.frame_data.css_class) frameClass = user.frame_data.css_class;
-                if (user.frame_data.border) frameStyle += `border: ${user.frame_data.border};`;
-                if (user.frame_data.shadow) frameStyle += `box-shadow: ${user.frame_data.shadow};`;
-                if (user.frame_data.background) frameStyle += `background: ${user.frame_data.background};`;
+                let frameData = user.frame_data;
+                if (typeof frameData === 'string') {
+                    try { frameData = JSON.parse(frameData); } catch {}
+                }
+                if (frameData.css_class) {
+                    frameClass = frameData.css_class;
+                    entry.classList.add(frameClass);
+                }
+                if (frameData.border) {
+                    frameStyle += `border: ${frameData.border};`;
+                }
+                if (frameData.shadow) {
+                    frameStyle += `box-shadow: ${frameData.shadow};`;
+                }
+                if (frameData.background) {
+                    frameStyle += `background: ${frameData.background};`;
+                }
+                if (frameStyle) {
+                    entry.style = frameStyle;
+                }
             }
-
+            const rankClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
             entry.innerHTML = `
                 <div class="rank ${rankClass}">${index + 1}</div>
                 <div class="user-info">
-                    <div class="avatar-preview ${frameClass}" style="${frameStyle}">
+                    <div class="avatar-preview">
                         <img src="avatars/${user.avatar}" alt="${user.name}">
                     </div>
                     <span class="name">${user.name}</span>
                 </div>
                 <div class="coins">${user.total_coins}</div>
             `;
-            
             leaderboardList.appendChild(entry);
         });
     } catch (error) {
@@ -1531,6 +1602,19 @@ function applyDynamicTheme(colors) {
     
     document.head.appendChild(style);
     document.body.classList.add('dynamic-theme');
+}
+
+// دالة مساعدة لإرجاع المؤشر الحالي وزيادته
+function getNextSnippet(language, difficulty) {
+    if (!gameState.snippetIndices[language]) gameState.snippetIndices[language] = {};
+    if (typeof gameState.snippetIndices[language][difficulty] !== 'number') gameState.snippetIndices[language][difficulty] = 0;
+    const snippets = codeSnippets[language][difficulty];
+    let idx = gameState.snippetIndices[language][difficulty];
+    const snippet = snippets[idx];
+    // زِد المؤشر، وإذا وصل للنهاية أعده للبداية
+    idx = (idx + 1) % snippets.length;
+    gameState.snippetIndices[language][difficulty] = idx;
+    return snippet;
 }
 
 // Authentication helper functions

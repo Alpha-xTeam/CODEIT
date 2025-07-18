@@ -116,26 +116,44 @@
                 <span class="hamburger-line"></span>
             </button>
             <div class="nav-menu">
+                <a href="about.html" class="nav-link">About Us</a>
                 <div id="user-menu" class="user-menu hidden">
                     <div class="coins-display">
                         <i class="fas fa-coins"></i>
                         <span id="user-coins">0</span>
                     </div>
-                    <button id="shop-btn" class="shop-btn">
+                    <a id="shop-btn" class="shop-btn" href="shop.html">
                         <i class="fas fa-shopping-cart"></i>
                         Shop
-                    </button>
+                    </a>
                     <button id="admin-btn" class="btn btn-secondary hidden" onclick="window.location.href='admin.html'">
                         <i class="fas fa-cogs"></i> Admin
                     </button>
-                    <div class="user-avatar">
+                    <!-- فقط الأفاتار يظهر -->
+                    <div class="user-avatar" id="user-avatar-dropdown-trigger">
                         <img id="nav-avatar" src="" alt="User Avatar">
                         <div id="profile-icon" class="profile-icon"></div>
                     </div>
-                    <span id="nav-username"></span>
-                    <button id="logout-btn" class="logout-btn">
+                    <!-- قائمة منبثقة لمعلومات الحساب -->
+                    <div id="account-dropdown" class="account-dropdown hidden">
+                        <div class="account-info">
+                            <div class="account-avatar">
+                                <img id="dropdown-avatar" src="" alt="User Avatar">
+                            </div>
+                            <div class="account-details">
+                                <div id="dropdown-username" class="account-username"></div>
+                                <div id="dropdown-email" class="account-email"></div>
+                            </div>
+                        </div>
+                        <button id="dropdown-logout-btn" class="btn btn-danger account-logout-btn">
+                            <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+                        </button>
+                    </div>
+                    <!-- إخفاء اسم المستخدم من الشريط الرئيسي -->
+                    <!-- <span id="nav-username"></span> -->
+                    <!-- <button id="logout-btn" class="logout-btn">
                         <i class="fas fa-sign-out-alt"></i>
-                    </button>
+                    </button> -->
                 </div>
             </div>
         </div>
@@ -396,5 +414,42 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="snippets.js"></script>
     <script src="script.js"></script>
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+  // تأكد من وجود العناصر
+  var avatarTrigger = document.getElementById('user-avatar-dropdown-trigger');
+  var accountDropdown = document.getElementById('account-dropdown');
+  if (avatarTrigger && accountDropdown) {
+    avatarTrigger.addEventListener('click', function(e) {
+      e.stopPropagation();
+      accountDropdown.classList.toggle('hidden');
+      // حدث بيانات المنبثق إذا كان المستخدم مسجل دخول
+      var user = localStorage.getItem('codeit_user');
+      if (!accountDropdown.classList.contains('hidden') && user) {
+        try {
+          var currentUser = JSON.parse(user);
+          document.getElementById('dropdown-avatar').src = 'avatars/' + currentUser.avatar;
+          document.getElementById('dropdown-username').textContent = currentUser.name;
+          document.getElementById('dropdown-email').textContent = currentUser.email;
+        } catch (e) {}
+      }
+    });
+    document.addEventListener('click', function(e) {
+      if (!avatarTrigger.contains(e.target) && !accountDropdown.contains(e.target)) {
+        accountDropdown.classList.add('hidden');
+      }
+    });
+  }
+  var dropdownLogoutBtn = document.getElementById('dropdown-logout-btn');
+  if (dropdownLogoutBtn) {
+    dropdownLogoutBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      if (accountDropdown) accountDropdown.classList.add('hidden');
+      // استدعاء دالة تسجيل الخروج من script.js
+      if (typeof handleLogout === 'function') handleLogout();
+    });
+  }
+});
+</script>
 </body>
 </html>

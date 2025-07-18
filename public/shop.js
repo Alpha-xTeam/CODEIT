@@ -36,7 +36,7 @@ function updateShopCoinsDisplay() {
     if (shopCoinsDisplay && currentUser) {
         shopCoinsDisplay.textContent = currentUser.total_coins;
     } else if (shopCoinsDisplay) {
-        shopCoinsDisplay.textContent = 'يرجى تسجيل الدخول';
+        shopCoinsDisplay.textContent = 'Please log in';
     }
 }
 
@@ -60,31 +60,24 @@ function displayShopItems(shopItems) {
     const shopContainer = document.getElementById('shop-items');
     if (!shopContainer) return;
     window._allShopItems = shopItems;
-    renderShopTab('avatar_frame');
-    document.querySelectorAll('.shop-tab').forEach(tab => {
-        tab.onclick = function() {
-            document.querySelectorAll('.shop-tab').forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
-            renderShopTab(this.dataset.tab);
-        };
-    });
+    renderShopTab('avatar_frame'); // فقط تبويب Avatar Frames
+    // إزالة كود التبويبات الأخرى
 }
 
 function renderShopTab(tab) {
     const shopContainer = document.getElementById('shop-items');
     if (!shopContainer) return;
+    // فقط قسم avatar_frame
     const categories = {
-        avatar_frame: { name: 'إطارات الصور', items: [] },
-        profile_icon: { name: 'أيقونات الحالة', items: [] }
+        avatar_frame: { name: 'Avatar Frames', items: [] }
     };
     (window._allShopItems || []).forEach(item => {
-        if ((tab === 'avatar_frame' && (item.category === 'avatar_frame' || item.category === 'frame')) ||
-            (tab === 'profile_icon' && (item.category === 'profile_icon' || item.category === 'icon'))) {
-            categories[tab].items.push(item);
+        if (item.category === 'avatar_frame' || item.category === 'frame') {
+            categories.avatar_frame.items.push(item);
         }
     });
     shopContainer.innerHTML = '';
-    const category = categories[tab];
+    const category = categories.avatar_frame;
     if (category && category.items.length > 0) {
         const categorySection = document.createElement('div');
         categorySection.className = 'shop-category';
@@ -96,7 +89,7 @@ function renderShopTab(tab) {
         `;
         shopContainer.appendChild(categorySection);
     } else {
-        shopContainer.innerHTML = '<div style="text-align:center;color:#aaa;padding:2rem">لا توجد عناصر في هذا القسم حالياً.</div>';
+        shopContainer.innerHTML = '<div style="text-align:center;color:#aaa;padding:2rem">No items in this section yet.</div>';
     }
 }
 
@@ -115,8 +108,8 @@ function createShopItemHTML(item) {
                 <div class="item-actions">
                     ${isOwned ? 
                         (isEquipped ? 
-                            '<button class="equipped-btn" disabled>مُجهز</button>' : 
-                            `<button class="equip-btn" onclick="equipItem(${item.id})">تجهيز</button>`
+                            '<button class="equipped-btn" disabled>Equipped</button>' : 
+                            `<button class="equip-btn" onclick="equipItem(${item.id})">Equip</button>`
                         ) : 
                         `<button class="purchase-btn" onclick="purchaseItem(${item.id})"><i class='fas fa-coins'></i> ${item.price}</button>`
                     }
@@ -154,10 +147,10 @@ function getItemPreviewContent(category, itemData) {
 
 // --- شراء وتجهيز العناصر ---
 async function purchaseItem(itemId) {
-    if (!currentUser) { showToast('يجب تسجيل الدخول أولاً!', 'error'); return; }
+    if (!currentUser) { showToast('You must log in first!', 'error'); return; }
     try {
         const { data, error } = await window.supabase.rpc('purchase_item', { user_email: currentUser.email, item_id: itemId });
-        if (error) { showToast('حدث خطأ أثناء الشراء', 'error'); return; }
+        if (error) { showToast('An error occurred during purchase', 'error'); return; }
         const result = data;
         if (result.success) {
             showToast(result.message, 'success');
@@ -171,15 +164,15 @@ async function purchaseItem(itemId) {
             showToast(result.message, 'error');
         }
     } catch (error) {
-        showToast('حدث خطأ أثناء الشراء', 'error');
+        showToast('An error occurred during purchase', 'error');
     }
 }
 
 async function equipItem(itemId) {
-    if (!currentUser) { showToast('يجب تسجيل الدخول أولاً!', 'error'); return; }
+    if (!currentUser) { showToast('You must log in first!', 'error'); return; }
     try {
         const { data, error } = await window.supabase.rpc('equip_item', { user_email: currentUser.email, item_id: itemId });
-        if (error) { showToast('حدث خطأ أثناء تجهيز العنصر', 'error'); return; }
+        if (error) { showToast('An error occurred while equipping the item', 'error'); return; }
         const result = data;
         if (result.success) {
             showToast(result.message, 'success');
@@ -189,7 +182,7 @@ async function equipItem(itemId) {
             showToast(result.message, 'error');
         }
     } catch (error) {
-        showToast('حدث خطأ أثناء تجهيز العنصر', 'error');
+        showToast('An error occurred while equipping the item', 'error');
     }
 }
 
