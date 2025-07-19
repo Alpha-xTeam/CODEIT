@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CODEIT - Leaderboard</title>
+    
+    <!-- App Icons -->
+    <link rel="icon" href="Logo/Logo.ico" type="image/x-icon">
+    <link rel="icon" href="Logo/Code-it-Logo.png" type="image/png" sizes="192x192">
+    <link rel="apple-touch-icon" href="Logo/Code-it-Logo.png" sizes="180x180">
+    
+    <!-- PWA Configuration -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#000000">
+    
+    <!-- Mobile App Meta Tags -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="CODEIT">
+    
+    <!-- App Description -->
+    <meta name="description" content="Global Leaderboard - See who's the best at CODEIT!">
+    <meta name="keywords" content="leaderboard, ranking, coding, typing, competition">
+    
+    <!-- CSS and Fonts -->
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        /* Leaderboard Page Specific Styles */
+        .leaderboard-page {
+            min-height: 100vh;
+            background: #000000;
+            padding-top: 0;
+        }
+        
+        .leaderboard-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 24px;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 3rem 0;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 237, 78, 0.05));
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        
+        .page-title {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            text-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+        }
+        
+        .page-title i {
+            color: #ffd700;
+            filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.5));
+            animation: trophy-glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes trophy-glow {
+            from {
+                filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.5));
+            }
+            to {
+                filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.8));
+            }
+        }
+        
+        .page-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .stat-box {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffd700;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .leaderboard-card {
+            background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(20, 20, 20, 0.9));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.4),
+                0 4px 20px rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            animation: fadeInUp 0.8s ease;
+        }
+        
+        .top-three {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .podium-place {
+            text-align: center;
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.03);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .podium-place::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .podium-place:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .podium-place:hover::before {
+            opacity: 1;
+        }
+        
+        .podium-place.first {
+            order: 2;
+            transform: scale(1.1);
+        }
+        
+        .podium-place.first::before {
+            background: linear-gradient(90deg, #ffd700, #ffed4e);
+        }
+        
+        .podium-place.second {
+            order: 1;
+        }
+        
+        .podium-place.second::before {
+            background: linear-gradient(90deg, #c0c0c0, #e0e0e0);
+        }
+        
+        .podium-place.third {
+            order: 3;
+        }
+        
+        .podium-place.third::before {
+            background: linear-gradient(90deg, #cd7f32, #daa520);
+        }
+        
+        .podium-rank {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+        
+        .podium-rank.first {
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+        
+        .podium-rank.second {
+            color: #c0c0c0;
+            text-shadow: 0 0 20px rgba(192, 192, 192, 0.5);
+        }
+        
+        .podium-rank.third {
+            color: #cd7f32;
+            text-shadow: 0 0 20px rgba(205, 127, 50, 0.5);
+        }
+        
+        .podium-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            border: 3px solid;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .podium-avatar.first {
+            border-color: #ffd700;
+        }
+        
+        .podium-avatar.second {
+            border-color: #c0c0c0;
+        }
+        
+        .podium-avatar.third {
+            border-color: #cd7f32;
+        }
+        
+        .podium-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .podium-score {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffd700;
+        }
+        
+        .remaining-ranks {
+            margin-top: 2rem;
+        }
+        
+        .ranks-header {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .loading-leaderboard {
+            text-align: center;
+            padding: 3rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 215, 0, 0.3);
+            border-top: 3px solid #ffd700;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .leaderboard-container {
+                padding: 1rem 16px;
+            }
+            
+            .page-title {
+                font-size: 2.2rem;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .stats-row {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: center;
+            }
+            
+            .top-three {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .podium-place.first {
+                order: 1;
+                transform: none;
+            }
+            
+            .podium-place.second {
+                order: 2;
+            }
+            
+            .podium-place.third {
+                order: 3;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .leaderboard-card {
+                padding: 1.5rem;
+            }
+            
+            .podium-rank {
+                font-size: 2rem;
+            }
+            
+            .podium-avatar {
+                width: 60px;
+                height: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loader">
+            <img src="Logo/Code-it-Logo.png" alt="Code-it Logo" class="logo-loader">
+            <div class="loading-text">Loading Leaderboard...</div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand" onclick="window.location.href='index.html'">
+                <img src="Logo/Code-it-Logo.png" alt="Code-it Logo" class="nav-logo">
+                <span class="nav-title">CODEIT</span>
+            </div>
+            <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Toggle navigation">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="about.html" class="nav-link">About</a>
+                <a href="leaderboard.html" class="nav-link active">Leaderboard</a>
+                <div id="user-menu" class="user-menu hidden">
+                    <div class="coins-display">
+                        <i class="fas fa-coins"></i>
+                        <span id="user-coins">0</span>
+                    </div>
+                    <a id="shop-btn" class="shop-btn" href="shop.html">
+                        <i class="fas fa-shopping-cart"></i>
+                        Shop
+                    </a>
+                    <button id="admin-btn" class="btn btn-secondary hidden" onclick="window.location.href='admin.html'">
+                        <i class="fas fa-cogs"></i> Admin
+                    </button>
+                    <div class="user-avatar" id="user-avatar-dropdown-trigger">
+                        <img id="nav-avatar" src="" alt="User Avatar">
+                        <div id="profile-icon" class="profile-icon"></div>
+                    </div>
+                    <div id="account-dropdown" class="account-dropdown hidden">
+                        <div class="account-info">
+                            <div class="account-avatar">
+                                <img id="dropdown-avatar" src="" alt="User Avatar">
+                            </div>
+                            <div class="account-details">
+                                <div id="dropdown-username" class="account-username"></div>
+                                <div id="dropdown-email" class="account-email"></div>
+                            </div>
+                        </div>
+                        <button id="dropdown-logout-btn" class="btn btn-danger account-logout-btn">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="leaderboard-page">
+        <div class="leaderboard-container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title">
+                    <i class="fas fa-trophy"></i>
+                    Global Leaderboard
+                </h1>
+                <p class="page-subtitle">Discover the best programmers at CODEIT</p>
+                <div class="stats-row">
+                    <div class="stat-box">
+                        <span id="total-users" class="stat-number">-</span>
+                        <span class="stat-label">Total Players</span>
+                    </div>
+                    <div class="stat-box">
+                        <span id="total-games" class="stat-number">-</span>
+                        <span class="stat-label">Total Games</span>
+                    </div>
+                    <div class="stat-box">
+                        <span id="total-coins" class="stat-number">-</span>
+                        <span class="stat-label">Total Coins</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Leaderboard Card -->
+            <div class="leaderboard-card">
+                <div id="loading-leaderboard" class="loading-leaderboard">
+                    <div class="loading-spinner"></div>
+                    <p>Loading leaderboard...</p>
+                </div>
+
+                <div id="leaderboard-content" class="hidden">
+                    <!-- Top 3 Podium -->
+                    <div class="top-three" id="top-three">
+                        <!-- Top 3 will be populated here -->
+                    </div>
+
+                    <!-- Remaining Ranks -->
+                    <div class="remaining-ranks">
+                        <h3 class="ranks-header">
+                            <i class="fas fa-list-ol"></i>
+                            Other Competitors
+                        </h3>
+                        <div class="leaderboard-table">
+                            <div class="table-header">
+                                <div class="rank-col">Rank</div>
+                                <div class="user-col">User</div>
+                                <div class="points-col">Points</div>
+                            </div>
+                            <div id="leaderboard-list" class="table-body">
+                                <!-- Remaining entries will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="script.js"></script>
+    <script src="leaderboard.js"></script>
+    <script>
+        // Navigation dropdown functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            var avatarTrigger = document.getElementById('user-avatar-dropdown-trigger');
+            var accountDropdown = document.getElementById('account-dropdown');
+            if (avatarTrigger && accountDropdown) {
+                avatarTrigger.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    accountDropdown.classList.toggle('hidden');
+                    var user = localStorage.getItem('codeit_user');
+                    if (!accountDropdown.classList.contains('hidden') && user) {
+                        try {
+                            var currentUser = JSON.parse(user);
+                            document.getElementById('dropdown-avatar').src = 'avatars/' + currentUser.avatar;
+                            document.getElementById('dropdown-username').textContent = currentUser.name;
+                            document.getElementById('dropdown-email').textContent = currentUser.email;
+                        } catch (e) {}
+                    }
+                });
+                document.addEventListener('click', function(e) {
+                    if (!avatarTrigger.contains(e.target) && !accountDropdown.contains(e.target)) {
+                        accountDropdown.classList.add('hidden');
+                    }
+                });
+            }
+            var dropdownLogoutBtn = document.getElementById('dropdown-logout-btn');
+            if (dropdownLogoutBtn) {
+                dropdownLogoutBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (accountDropdown) accountDropdown.classList.add('hidden');
+                    if (typeof handleLogout === 'function') handleLogout();
+                });
+            }
+        });
+    </script>
+</body>
+</html>

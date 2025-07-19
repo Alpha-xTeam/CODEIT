@@ -2,6 +2,10 @@
 const SUPABASE_URL = 'https://xspzacvpizjjaosrebgz.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhzcHphY3ZwaXpqamFvc3JlYmd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI1MTA4MDQsImV4cCI6MjA2ODA4NjgwNH0.pq-YKgKTY38hiqpJaivv8m79hhr_jYRkDg9Idon-TRY';
 
+// Make Supabase config available globally
+window.SUPABASE_URL = SUPABASE_URL;
+window.SUPABASE_ANON_KEY = SUPABASE_ANON_KEY;
+
 // Initialize Supabase client
 let supabase;
 let currentUser = null;
@@ -52,6 +56,8 @@ async function initializeApp() {
     // Initialize Supabase
     try {
         supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Make the client available globally
+        window.supabase.client = supabase;
         console.log('Supabase initialized successfully');
         
         // Test Supabase connection
@@ -84,9 +90,6 @@ async function initializeApp() {
     
     // Set up event listeners
     setupEventListeners();
-    
-    // Load leaderboard
-    await loadLeaderboard();
 }
 
 function setupEventListeners() {
@@ -172,9 +175,6 @@ function setupEventListeners() {
     // Modal controls
     document.getElementById('close-modal').addEventListener('click', closeModal);
     document.getElementById('continue-btn').addEventListener('click', closeModal);
-    
-    // Leaderboard toggle
-    document.getElementById('toggle-leaderboard').addEventListener('click', toggleLeaderboard);
     
     // Logout
     document.getElementById('logout-btn').addEventListener('click', handleLogout);
@@ -461,8 +461,6 @@ async function showGameSection() {
     // Apply user theme and items
     await loadUserItems();
     await applyUserTheme();
-    
-    loadLeaderboard();
     
     // إظهار زر لوحة التحكم إذا كان المستخدم مالك
     const adminBtn = document.getElementById('admin-btn');
@@ -926,9 +924,6 @@ async function updateUserStats(coins, accuracy, time) {
             showToast('فشل في تحديث البيانات', 'error');
         }
         
-        // Update leaderboard
-        await loadLeaderboard();
-        
     } catch (error) {
         console.error('Error updating user stats:', error);
         showToast('خطأ في تحديث الإحصائيات', 'error');
@@ -1039,89 +1034,6 @@ function newSnippet() {
     }
     
     showToast('New snippet loaded!', 'info');
-}
-
-async function loadLeaderboard() {
-    try {
-        const { data: leaderboard, error } = await supabase
-            .from('leaderboard_with_frame')
-            .select('*');
-        
-        if (error) {
-            console.error('Error loading leaderboard:', error);
-            return;
-        }
-        
-        const leaderboardList = document.getElementById('leaderboard-list');
-        leaderboardList.innerHTML = '';
-        
-        if (!leaderboard || leaderboard.length === 0) {
-            leaderboardList.innerHTML = '<div class="no-data">No users on leaderboard yet</div>';
-            return;
-        }
-        // ترتيب النتائج حسب النقاط من الأعلى للأقل
-        leaderboard.sort((a, b) => b.total_coins - a.total_coins);
-        leaderboard.forEach((user, index) => {
-            const entry = document.createElement('div');
-            entry.className = 'leaderboard-entry';
-            // تمييز المستخدم الحالي
-            if (currentUser && user.id === currentUser.id) {
-                entry.classList.add('current-user');
-            }
-            // تطبيق إطار الأفاتار (frame) على الكارت نفسه إذا كان موجوداً
-            let frameClass = '';
-            let frameStyle = '';
-            if (user.frame_data) {
-                let frameData = user.frame_data;
-                if (typeof frameData === 'string') {
-                    try { frameData = JSON.parse(frameData); } catch {}
-                }
-                if (frameData.css_class) {
-                    frameClass = frameData.css_class;
-                    entry.classList.add(frameClass);
-                }
-                if (frameData.border) {
-                    frameStyle += `border: ${frameData.border};`;
-                }
-                if (frameData.shadow) {
-                    frameStyle += `box-shadow: ${frameData.shadow};`;
-                }
-                if (frameData.background) {
-                    frameStyle += `background: ${frameData.background};`;
-                }
-                if (frameStyle) {
-                    entry.style = frameStyle;
-                }
-            }
-            const rankClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
-            entry.innerHTML = `
-                <div class="rank ${rankClass}">${index + 1}</div>
-                <div class="user-info">
-                    <div class="avatar-preview">
-                        <img src="avatars/${user.avatar}" alt="${user.name}">
-                    </div>
-                    <span class="name">${user.name}</span>
-                </div>
-                <div class="coins">${user.total_coins}</div>
-            `;
-            leaderboardList.appendChild(entry);
-        });
-    } catch (error) {
-        console.error('Error loading leaderboard:', error);
-    }
-}
-
-function toggleLeaderboard() {
-    const content = document.getElementById('leaderboard-content');
-    const button = document.getElementById('toggle-leaderboard');
-    
-    if (content.classList.contains('hidden')) {
-        content.classList.remove('hidden');
-        button.innerHTML = '<i class="fas fa-eye-slash"></i> Hide Leaderboard';
-    } else {
-        content.classList.add('hidden');
-        button.innerHTML = '<i class="fas fa-eye"></i> Show Leaderboard';
-    }
 }
 
 // Shop functionality
