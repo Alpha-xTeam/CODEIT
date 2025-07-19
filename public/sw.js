@@ -1,87 +1,45 @@
-// Service Worker for CODEIT PWA
-const CACHE_NAME = 'codeit-v1';
-const urlsToCache = [
-  '/',
-  '/index.html',
-  '/styles.css',
-  '/script.js',
-  '/snippets.js',
-  '/shop.html',
-  '/shop.js',
-  '/admin.html',
-  '/admin.js',
-  '/manifest.json',
-  '/browserconfig.xml',
-  '/Logo/Code-it-Logo.png',
-  '/Logo/Code-it-Logo.ico',
-  '/Logo/Logo.ico',
-  '/avatars/man.png',
-  '/avatars/man2.png',
-  '/avatars/man3.png',
-  '/avatars/woman.png',
-  '/avatars/woman2.png',
-  '/avatars/woman3.png',
-  'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css',
-  'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2'
-];
+// Service Worker for CODEIT PWA - NO CACHE MODE
+const CACHE_NAME = 'codeit-v1-no-cache';
 
-// Install event
+// Install event - Do not cache anything
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('Opened cache');
-        return cache.addAll(urlsToCache);
-      })
-  );
+  console.log('Service Worker installed - NO CACHE MODE');
+  // Skip waiting to activate immediately
+  self.skipWaiting();
 });
 
-// Fetch event
+// Fetch event - Always fetch from network, no caching
 self.addEventListener('fetch', (event) => {
   event.respondWith(
-    caches.match(event.request)
+    fetch(event.request.clone())
       .then((response) => {
-        // Cache hit - return response
-        if (response) {
-          return response;
-        }
-        
-        // Clone the request
-        const fetchRequest = event.request.clone();
-        
-        return fetch(fetchRequest).then((response) => {
-          // Check if we received a valid response
-          if (!response || response.status !== 200 || response.type !== 'basic') {
-            return response;
-          }
-          
-          // Clone the response
-          const responseToCache = response.clone();
-          
-          caches.open(CACHE_NAME)
-            .then((cache) => {
-              cache.put(event.request, responseToCache);
-            });
-          
-          return response;
+        // Always return fresh response from network
+        return response;
+      })
+      .catch((error) => {
+        console.log('Fetch failed:', error);
+        // Return a basic error response if network fails
+        return new Response('Network error occurred', {
+          status: 408,
+          headers: { 'Content-Type': 'text/plain' }
         });
       })
   );
 });
 
-// Activate event
+// Activate event - Clear all existing caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            console.log('Deleting old cache:', cacheName);
-            return caches.delete(cacheName);
-          }
+          console.log('Deleting cache:', cacheName);
+          return caches.delete(cacheName);
         })
       );
+    }).then(() => {
+      // Claim all clients immediately
+      return self.clients.claim();
     })
   );
 });

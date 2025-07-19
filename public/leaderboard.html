@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Disable Caching -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>CODEIT - Leaderboard</title>
     
     <!-- App Icons -->
@@ -24,8 +28,8 @@
     <meta name="description" content="Global Leaderboard - See who's the best at CODEIT!">
     <meta name="keywords" content="leaderboard, ranking, coding, typing, competition">
     
-    <!-- CSS and Fonts -->
-    <link rel="stylesheet" href="styles.css">
+    <!-- CSS and Fonts with cache busting -->
+    <link rel="stylesheet" href="styles.css?v=<?= time() ?>">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
@@ -464,10 +468,10 @@
     <!-- Toast Notifications -->
     <div id="toast-container" class="toast-container"></div>
 
-    <!-- Scripts -->
+    <!-- Scripts with cache busting -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="script.js"></script>
-    <script src="leaderboard.js"></script>
+    <script src="script.js?v=<?= time() ?>"></script>
+    <script src="leaderboard.js?v=<?= time() ?>"></script>
     <script>
         // Navigation dropdown functionality
         document.addEventListener('DOMContentLoaded', function() {

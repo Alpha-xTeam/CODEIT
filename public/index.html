@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Disable Caching -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>CODEIT</title>
       <!-- App Icons -->
     <link rel="icon" href="Logo/Logo.ico" type="image/x-icon">
@@ -90,8 +94,8 @@
     }
     </script>
     
-    <!-- CSS and Fonts -->
-    <link rel="stylesheet" href="styles.css">
+    <!-- CSS and Fonts with cache busting -->
+    <link rel="stylesheet" href="styles.css?v=<?= time() ?>">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
@@ -259,6 +263,7 @@
         <div id="game-section" class="game-section hidden">
             <!-- Game Settings -->
             <div class="game-settings">
+                <div class="decorative-dots"></div>
                 <div class="settings-group">
                     <label for="language-select">Programming Language</label>
                     <select id="language-select" class="select-input">
@@ -414,15 +419,15 @@
             <div class="footer-section">
                 <h4>Connect</h4>
                 <div class="footer-social">
-                    <a href="#" class="social-link instagram-link"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="social-link telegram-link"><i class="fab fa-telegram-plane"></i></a>
+                    <a href="https://www.instagram.com/talpha.dev" class="social-link instagram-link"><i class="fab fa-instagram"></i></a>
+                    <a href="https://t.me/talpha_dev" class="social-link telegram-link"><i class="fab fa-telegram-plane"></i></a>
                 </div>
             </div>
         </div>
         
         <div class="footer-bottom">
             <div class="footer-bottom-content">
-                <p>&copy; 2025 CODEIT by Alpha-xTeam. All rights reserved.</p>
+                <p>&copy; 2025 CODEIT by Alpha Team. All rights reserved.</p>
                 <div class="footer-bottom-links">
                     <a href="#">Privacy Policy</a>
                     <a href="#">Terms of Service</a>
@@ -438,10 +443,10 @@
     <!-- تم نقل المتجر إلى صفحة منفصلة -->
     <!-- Shop Item Details Modal -->
     <!-- تم نقل تفاصيل عناصر المتجر إلى صفحة منفصلة -->
-    <!-- Scripts -->
+    <!-- Scripts with cache busting -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="snippets.js"></script>
-    <script src="script.js"></script>
+    <script src="snippets.js?v=<?= time() ?>"></script>
+    <script src="script.js?v=<?= time() ?>"></script>
     <script>
 document.addEventListener('DOMContentLoaded', function() {
   // تأكد من وجود العناصر

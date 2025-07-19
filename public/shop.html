@@ -3,9 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Disable Caching -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>CODEIT - المتجر</title>
     <link rel="icon" href="Logo/Code-it-Logo.ico" type="image/x-icon">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=<?= time() ?>">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
@@ -109,13 +113,13 @@
           window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
           window.supabase = window.supabaseClient;
         }
-        // بعد تهيئة supabase، حمّل shop.js
+        // بعد تهيئة supabase، حمّل shop.js مع cache busting
         var s = document.createElement('script');
-        s.src = 'shop.js';
+        s.src = 'shop.js?v=' + Date.now();
         document.body.appendChild(s);
       });ذا 
     </script>
-    <script src="snippets.js"></script>
+    <script src="snippets.js?v=<?= time() ?>"></script>
 </body>
 <script>console.log('END SCRIPT: shop.html loaded');</script>
 </html>

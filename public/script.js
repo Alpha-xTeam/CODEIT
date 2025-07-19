@@ -1,3 +1,74 @@
+// Cache Busting Functions
+function addCacheBusting() {
+    const timestamp = Date.now();
+    
+    // Add cache busting to all CSS links
+    document.querySelectorAll('link[rel="stylesheet"]').forEach(link => {
+        if (link.href && !link.href.includes('?v=') && !link.href.includes('googleapis') && !link.href.includes('cdnjs')) {
+            link.href += (link.href.includes('?') ? '&' : '?') + 'v=' + timestamp;
+        }
+    });
+    
+    // Add cache busting to all script tags (except external CDNs)
+    document.querySelectorAll('script[src]').forEach(script => {
+        if (script.src && !script.src.includes('?v=') && !script.src.includes('jsdelivr') && !script.src.includes('googleapis') && !script.src.includes('cdnjs')) {
+            script.src += (script.src.includes('?') ? '&' : '?') + 'v=' + timestamp;
+        }
+    });
+}
+
+// Clear browser cache programmatically
+function clearBrowserCache() {
+    // Clear localStorage
+    if (typeof Storage !== "undefined") {
+        // Keep user data but clear other cache
+        const userData = localStorage.getItem('codeit_user');
+        const userSettings = localStorage.getItem('codeit_settings');
+        localStorage.clear();
+        if (userData) localStorage.setItem('codeit_user', userData);
+        if (userSettings) localStorage.setItem('codeit_settings', userSettings);
+    }
+    
+    // Clear sessionStorage
+    if (typeof Storage !== "undefined") {
+        sessionStorage.clear();
+    }
+    
+    // Force reload without cache
+    if ('caches' in window) {
+        caches.keys().then(names => {
+            names.forEach(name => {
+                caches.delete(name);
+            });
+        });
+    }
+}
+
+// Add cache-control headers to fetch requests
+function fetchWithNoCache(url, options = {}) {
+    const nocacheOptions = {
+        ...options,
+        headers: {
+            ...options.headers,
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+        }
+    };
+    
+    // Add timestamp to URL for cache busting
+    const separator = url.includes('?') ? '&' : '?';
+    const cacheBustedUrl = url + separator + '_t=' + Date.now();
+    
+    return fetch(cacheBustedUrl, nocacheOptions);
+}
+
+// Initialize cache busting when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    addCacheBusting();
+    console.log('Cache busting applied to all resources');
+});
+
 // Supabase Configuration
 const SUPABASE_URL = 'https://xspzacvpizjjaosrebgz.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhzcHphY3ZwaXpqamFvc3JlYmd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI1MTA4MDQsImV4cCI6MjA2ODA4NjgwNH0.pq-YKgKTY38hiqpJaivv8m79hhr_jYRkDg9Idon-TRY';
@@ -33,7 +104,8 @@ if (document.getElementById('welcome-section')) {
 async function initializeApp() {
     console.log('Initializing app...'); // Debug log
     
-    // Register Service Worker for PWA
+    // Register Service Worker for PWA - DISABLED FOR NO CACHING
+    /*
     if ('serviceWorker' in navigator) {
         try {
             const registration = await navigator.serviceWorker.register('/sw.js');
@@ -52,6 +124,7 @@ async function initializeApp() {
             console.error('Service Worker registration failed:', error);
         }
     }
+    */
     
     // Initialize Supabase
     try {
